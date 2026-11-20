@@ -106,7 +106,8 @@ export default function Sobre() {
           <h2 id="real-t" style={{ fontSize: 17 }}>O que é real e o que é simulado</h2>
           <ul className="passos">
             <li><b>Real:</b> ciclovias, pontos de apoio, rotas, altitude, busca de endereços e o fator de emissão.</li>
-            <li><b>Retrato gravado:</b> os dados da região da Av. Paulista vêm de uma consulta ao OpenStreetMap de 20/11/2026. Fora dela, o app consulta ao vivo.</li>
+            <li><b>Retrato gravado:</b> os dados de Curitiba e Almirante Tamandaré vêm de uma consulta ao OpenStreetMap de 20/11/2026. Fora dessa região, o app consulta ao vivo.</li>
+            <li><b>Lacuna:</b> em Almirante Tamandaré quase nada está mapeado ainda (nenhuma ciclovia e nenhum bicicletário no OpenStreetMap). A comunidade do app existe justamente para preencher esse vazio.</li>
             <li><b>Fictício:</b> pessoas, rotas compartilhadas e alertas de exemplo (os locais são reais). Planos não cobram nada.</li>
             <li><b>Só neste navegador:</b> perfil, pedaladas, avaliações e alertas que você criar.</li>
           </ul>

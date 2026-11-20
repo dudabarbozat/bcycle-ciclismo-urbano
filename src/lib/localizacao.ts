@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { PONTO_PADRAO, type LatLon } from "./geo";
 
-/* Posição do ciclista. Começa no ponto de exemplo (MASP) e só usa o GPS quando a pessoa pede. */
+/* Posição do ciclista. Começa no ponto de exemplo (Centro de Curitiba) e só usa o GPS quando a pessoa pede. */
 
 export type Posicao = LatLon & { nome: string; real: boolean; precisao?: number };
 export type StatusGps = "exemplo" | "pedindo" | "ativo" | "negado" | "indisponivel";
@@ -47,9 +47,9 @@ export function pedirGps(): Promise<Posicao> {
   });
 }
 
-export function usarExemplo() {
+export function usarExemplo(lugar: LatLon & { nome: string } = PONTO_PADRAO) {
   if (vigia != null) { navigator.geolocation.clearWatch(vigia); vigia = null; }
-  definir({ posicao: EXEMPLO, status: "exemplo" });
+  definir({ posicao: { ...lugar, real: false }, status: "exemplo" });
 }
 
 const SERVIDOR: Estado = { posicao: EXEMPLO, status: "exemplo" };

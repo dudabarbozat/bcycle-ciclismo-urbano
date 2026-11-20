@@ -9,7 +9,7 @@ import PerfilAltitude from "../PerfilAltitude";
 import { useAviso } from "../Aviso";
 import { buscarLugar, calcularRota, PERFIS, type Lugar, type PerfilRota, type Rota } from "@/lib/rota";
 import { carregarRetrato, CATEGORIAS, type Ponto } from "@/lib/osm";
-import { distancia, distanciaALinha, formatarDistancia, formatarTempo, PONTO_PADRAO, type LatLon } from "@/lib/geo";
+import { distancia, distanciaALinha, formatarDistancia, formatarTempo, LUGARES_EXEMPLO, type LatLon } from "@/lib/geo";
 import { pedirGps, useLocalizacao } from "@/lib/localizacao";
 import { atualizar, novoId, temPlano, TIPOS_ALERTA, useEstado, type Alerta, type Modo } from "@/lib/estado";
 import { co2Evitado, formatarKg } from "@/lib/carbono";
@@ -344,7 +344,8 @@ export default function RotaTela() {
                 {editando === "origem" && (
                   <>
                     <button type="button" onClick={usarGps}><b>{status === "pedindo" ? "Obtendo localização…" : "Minha localização (GPS)"}</b><small>Usa o GPS do aparelho</small></button>
-                    <button type="button" onClick={() => escolher({ ...PONTO_PADRAO })}><b>MASP, Av. Paulista</b><small>Ponto de exemplo do protótipo</small></button>
+                    <button type="button" onClick={() => escolher({ ...LUGARES_EXEMPLO.curitiba })}><b>{LUGARES_EXEMPLO.curitiba.nome}</b><small>Centro de Curitiba</small></button>
+                    <button type="button" onClick={() => escolher({ ...LUGARES_EXEMPLO.tamandare })}><b>{LUGARES_EXEMPLO.tamandare.nome}</b><small>Região metropolitana de Curitiba</small></button>
                   </>
                 )}
                 {sugestoes.map((s, i) => (

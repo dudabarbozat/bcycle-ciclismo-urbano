@@ -67,7 +67,7 @@ const simNao = (v?: string) => (v === "yes" ? "Sim" : v === "no" ? "Não" : v);
 
 function nomePadrao(c: Categoria, t: Record<string, string>): string {
   if (c === "oficina" && t.amenity === "bicycle_repair_station") return "Estação de reparo";
-  if (c === "compartilhada" && t.network) return `Estação ${t.network.replace(/\s*\(.*\)$/, "")}`;
+  if (c === "compartilhada" && t.operator) return `Estação ${t.operator}`;
   if (c === "ar" && t.amenity === "charging_station") return "Recarga de e-bike";
   if (c === "ar") return "Calibragem de pneu";
   if (c === "estacionamento") return "Bicicletário";
@@ -90,7 +90,8 @@ function detalhesDe(c: Categoria, t: Record<string, string>): { rotulo: string; 
     add("Aluguel", simNao(t["service:bicycle:rental"]));
   }
   if (c === "compartilhada") {
-    add("Rede", t.network);
+    /* A rede ("network") não é exibida: em Curitiba as estações da Tembici estão marcadas no
+       OpenStreetMap com a rede de outra cidade. O operador está correto. */
     add("Operador", t.operator);
     add("Vagas", t.capacity);
   }
@@ -140,15 +141,15 @@ export function converterCiclovias(r: RespostaOSM): Ciclovia[] {
     });
 }
 
-/* ---------- Retrato gravado (região da Paulista) ---------- */
+/* ---------- Retrato gravado (Curitiba e Almirante Tamandaré) ---------- */
 
 export type Retrato = { pontos: Ponto[]; ciclovias: Ciclovia[]; dataOSM: string };
 
 let retratoCache: Promise<Retrato> | null = null;
 export function carregarRetrato(): Promise<Retrato> {
   retratoCache ??= Promise.all([
-    fetch(caminho("/dados/pontos-paulista.json")).then((r) => r.json() as Promise<RespostaOSM>),
-    fetch(caminho("/dados/ciclovias-paulista.json")).then((r) => r.json() as Promise<RespostaOSM>),
+    fetch(caminho("/dados/pontos-curitiba.json")).then((r) => r.json() as Promise<RespostaOSM>),
+    fetch(caminho("/dados/ciclovias-curitiba.json")).then((r) => r.json() as Promise<RespostaOSM>),
   ]).then(([p, c]) => ({
     pontos: converterPontos(p),
     ciclovias: converterCiclovias(c),

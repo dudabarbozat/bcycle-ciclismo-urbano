@@ -51,7 +51,7 @@ export default function MapaTela() {
   const [areaCarregada, setAreaCarregada] = useState<Recorte | null>(null);
   const pedidoInicial = useRef<URLSearchParams | null>(null);
 
-  /* Retrato gravado da região da Paulista. */
+  /* Retrato gravado de Curitiba e Almirante Tamandaré. */
   useEffect(() => {
     carregarRetrato()
       .then((r) => {
@@ -164,7 +164,7 @@ export default function MapaTela() {
     fonte?.tipo === "aovivo"
       ? `OpenStreetMap ao vivo · ${rotuloDataOSM(fonte.data)}`
       : fonte
-        ? `Região da Paulista · OpenStreetMap de ${rotuloDataOSM(fonte.data)}`
+        ? `Curitiba e Tamandaré · OpenStreetMap de ${rotuloDataOSM(fonte.data)}`
         : "Carregando dados…";
 
   return (

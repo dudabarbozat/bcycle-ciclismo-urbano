@@ -9,7 +9,7 @@ Portfólio pessoal. Projeto apresentado em hackathon pelo Time 8 e reconstruído
 ## Contexto
 
 - Problema: roubo de bicicletas e falta de lugares confiáveis para estacionar e consertar. Números citados no pitch para o estado de São Paulo: 13.563 roubos e furtos registrados em boletim em 2020, média de uma bike roubada a cada 40 minutos, 61% das vítimas sem seguro, cerca de 40% das bikes roubadas estavam presas com corrente, cabo ou cadeado.
-- Persona: Marcelo, 32 anos, garçom em São Paulo. Tranca a bike no estande perto do trabalho com a melhor trava que encontrou e mesmo assim entrou para as estatísticas. Quer saber onde há estacionamento seguro e quais oficinas confiáveis ficam na sua rota.
+- Persona (do pitch, ambientada em São Paulo): Marcelo, 32 anos, garçom. Tranca a bike no estande perto do trabalho com a melhor trava que encontrou e mesmo assim entrou para as estatísticas. Quer saber onde há estacionamento seguro e quais oficinas confiáveis ficam na sua rota.
 - Proposta original: navegação curva a curva com altitude e um recurso de segurança que evita locais sem ciclovia e vias sem pavimento; mapa de oficinas, bicicletários, banheiros, bombas de ar, água e recarga de e-bike; rede coletiva com rotas favoritas, avaliações e avisos de obras, árvores caídas e buracos; cálculo da pegada de carbono pelos km pedalados.
 - Modelo de negócio: Freemium (gratuito, captação de leads), Básico (a partir de R$ 5,40/mês: km por dia e avisos na rota) e Premium (valor sob consulta: rotas com relevo, mapa offline e rota personalizada pelo modo de pedalar).
 - Equipe (Time 8):
@@ -54,12 +54,16 @@ Portfólio pessoal. Projeto apresentado em hackathon pelo Time 8 e reconstruído
 
 Todas aceitam chamadas do navegador (CORS). Não há backend.
 
-### Retrato gravado da região da Paulista
+### Retrato gravado de Curitiba e Almirante Tamandaré
 
-Para a demonstração abrir rápido e não depender dos servidores públicos do Overpass, que costumam ficar sobrecarregados, `public/dados/` traz uma consulta feita em 20/11/2026 no recorte sul -23,585, oeste -46,685, norte -23,538, leste -46,627 (Paulista, Consolação, Jardins, Bela Vista, Liberdade e Centro):
+O protótipo está ambientado em Curitiba e em Almirante Tamandaré, na região metropolitana. Para a demonstração abrir rápido e não depender dos servidores públicos do Overpass, que costumam ficar sobrecarregados, `public/dados/` traz uma consulta feita em 20/11/2026 no recorte sul -25,455, oeste -49,335, norte -25,290, leste -49,225 (do Centro de Almirante Tamandaré ao Centro de Curitiba, passando pelo Tanguá e pelo Barigui):
 
-- `pontos-paulista.json`: 287 pontos (138 estações de bike compartilhada, 83 bicicletários, 36 banheiros, 20 bebedouros, 7 lojas e oficinas, 3 estações de reparo).
-- `ciclovias-paulista.json`: 636 trechos de ciclovia e ciclofaixa.
+- `pontos-curitiba.json`: 255 pontos (87 bicicletários, 49 banheiros, 48 lojas e oficinas, 48 estações de bike compartilhada, 21 bebedouros, 1 estação de reparo, 1 calibrador).
+- `ciclovias-curitiba.json`: 1.111 trechos de ciclovia e ciclofaixa.
+
+Em Almirante Tamandaré não há nenhuma ciclovia, ciclofaixa, bicicletário, oficina ou estação de bike no OpenStreetMap (consulta pela área do município em 20/11/2026, que encontrou 120 outros pontos cadastrados, como comércio e serviços). O app mostra essa lacuna em vez de escondê-la: a partir de Tamandaré, a tela inicial diz que não há nada mapeado a até 3 km e convida a pessoa a avisar a comunidade ou mapear o lugar.
+
+As estações de bike compartilhada de Curitiba (operadas pela Tembici) estão marcadas no OpenStreetMap com a rede de outra cidade, por isso o app mostra só o operador.
 
 Os arquivos mantêm o formato de resposta do Overpass, só com as tags usadas, então o mesmo conversor (`lib/osm.ts`) lê o retrato e a consulta ao vivo.
 
@@ -86,7 +90,7 @@ Fator padrão: 0,16725 kg CO₂e/km ("Average car", combustível não informado)
 - O tempo até um ponto de apoio, fora da rota, é estimado a 15 km/h sobre a distância em linha reta acrescida de 30%.
 - Planos e cobrança.
 - Tudo o que a pessoa cria (perfil, pedaladas, avaliações, alertas, rotas, dados da bike) fica no `localStorage` do navegador e não é visto por mais ninguém. O Perfil tem "Restaurar exemplos" e "Apagar tudo".
-- Ponto de partida padrão: MASP, na Avenida Paulista. O GPS só é usado quando a pessoa pede.
+- Ponto de partida padrão: Praça Tiradentes, no Centro de Curitiba. A tela inicial troca para o Centro de Almirante Tamandaré ou para a localização real. O GPS só é usado quando a pessoa pede.
 - Não há mapa offline, apesar de constar no plano Premium do pitch.
 
 ## Visual
@@ -136,7 +140,7 @@ src/lib/carbono.ts          fator de emissão e cálculo
 src/lib/estado.ts           estado local, planos e tipos de alerta
 src/lib/comunidade.ts       rotas e alertas de exemplo
 src/lib/localizacao.ts      GPS sob demanda
-public/dados/               retrato do OpenStreetMap da região da Paulista
+public/dados/               retrato do OpenStreetMap de Curitiba e Almirante Tamandaré
 public/img/                 logo e ícones
 ```
 

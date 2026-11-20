@@ -6,9 +6,13 @@ import AppShell from "../AppShell";
 import Icone from "../Icone";
 import { carregarRetrato, CATEGORIAS, type Ponto } from "@/lib/osm";
 import { dentroDoRetrato, distancia, formatarDistancia, formatarTempo, tempoPedalando } from "@/lib/geo";
-import { useLocalizacao } from "@/lib/localizacao";
+import { pedirGps, useLocalizacao, usarExemplo } from "@/lib/localizacao";
+import { LUGARES_EXEMPLO } from "@/lib/geo";
+import { useAviso } from "../Aviso";
 import { temPlano, TIPOS_ALERTA, useEstado } from "@/lib/estado";
 import { co2Evitado, formatarKg } from "@/lib/carbono";
+
+const RAIO_PERTO = 3000;
 
 const ICONE_CAT: Record<Ponto["categoria"], string> = {
   estacionamento: "cadeado", oficina: "chave", compartilhada: "bike", banheiro: "info", agua: "gota", ar: "mais",
@@ -16,7 +20,8 @@ const ICONE_CAT: Record<Ponto["categoria"], string> = {
 
 export default function Inicio() {
   const estado = useEstado();
-  const { posicao } = useLocalizacao();
+  const { posicao, status } = useLocalizacao();
+  const avisar = useAviso();
   const [pontos, setPontos] = useState<Ponto[] | null>(null);
   const [erro, setErro] = useState(false);
 
@@ -24,7 +29,7 @@ export default function Inicio() {
     carregarRetrato().then((r) => setPontos(r.pontos)).catch(() => setErro(true));
   }, []);
 
-  /* Os mais próximos de cada tipo, na ordem de prioridade do pitch: estacionar, consertar, alugar, beber água. */
+  /* Os mais próximos de cada tipo, a até 3 km, na ordem de prioridade do pitch: estacionar, consertar, alugar, beber água. */
   const perto = useMemo(() => {
     if (!pontos) return [];
     const cotas: [Ponto["categoria"], number][] = [["estacionamento", 3], ["oficina", 2], ["compartilhada", 1], ["agua", 1]];
@@ -32,9 +37,14 @@ export default function Inicio() {
       pontos
         .filter((p) => p.categoria === cat)
         .map((p) => ({ p, d: distancia(posicao, p) }))
+        .filter((x) => x.d <= RAIO_PERTO)
         .sort((a, b) => a.d - b.d)
         .slice(0, n),
     );
+  }, [pontos, posicao]);
+  const maisProximo = useMemo(() => {
+    if (!pontos || pontos.length === 0) return null;
+    return Math.min(...pontos.filter((p) => p.categoria !== "banheiro").map((p) => distancia(posicao, p)));
   }, [pontos, posicao]);
 
   const nome = estado.perfil?.nome ?? "";
@@ -71,15 +81,33 @@ export default function Inicio() {
             <h2 id="perto-titulo">Perto de você</h2>
             <Link href="/mapa/?apoio=1">Navegar no mapa</Link>
           </div>
-          <p className="pequeno muted" style={{ marginTop: -6 }}>
-            {posicao.real ? "A partir da sua localização." : `A partir de ${posicao.nome}.`}
-          </p>
+          <div className="chips" role="group" aria-label="Ver a partir de">
+            <button type="button" className="chip" aria-pressed={!posicao.real && posicao.lat === LUGARES_EXEMPLO.curitiba.lat} onClick={() => usarExemplo(LUGARES_EXEMPLO.curitiba)}>Centro de Curitiba</button>
+            <button type="button" className="chip" aria-pressed={!posicao.real && posicao.lat === LUGARES_EXEMPLO.tamandare.lat} onClick={() => usarExemplo(LUGARES_EXEMPLO.tamandare)}>Almirante Tamandaré</button>
+            <button type="button" className="chip" aria-pressed={posicao.real} onClick={() => pedirGps().catch((e: Error) => avisar(e.message))}>
+              {status === "pedindo" ? "Localizando…" : "Minha localização"}
+            </button>
+          </div>
           {erro && <div className="aviso erro"><Icone nome="alerta" />Não foi possível carregar os pontos. Verifique a conexão e recarregue.</div>}
           {!pontos && !erro && <div className="carregando"><span className="girando" />Carregando pontos de apoio…</div>}
           {pontos && foraDaArea && (
-            <div className="aviso"><Icone nome="info" />Você está fora da região gravada no protótipo (Av. Paulista). No mapa, toque em “Buscar nesta área” para carregar os pontos ao seu redor.</div>
+            <div className="aviso"><Icone nome="info" />Você está fora da região gravada no protótipo (Curitiba e Almirante Tamandaré). No mapa, toque em “Buscar nesta área” para carregar os pontos ao seu redor.</div>
           )}
-          {pontos && !foraDaArea && (
+          {pontos && !foraDaArea && perto.length === 0 && (
+            <div className="cartao" style={{ display: "grid", gap: 10 }}>
+              <b>Nada mapeado a até 3 km daqui</b>
+              <p className="pequeno muted">
+                Ninguém cadastrou ainda bicicletário, oficina ou ciclovia nesta região no OpenStreetMap.
+                {maisProximo != null && ` O ponto de apoio mais próximo fica a ${formatarDistancia(maisProximo)}.`}{" "}
+                Quem pedala por aqui pode mudar isso: avise a comunidade no mapa ou cadastre o lugar no OpenStreetMap, e ele aparece para todo mundo.
+              </p>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <Link className="botao pequeno" href="/mapa/">Abrir mapa</Link>
+                <a className="botao fantasma pequeno" href={`https://www.openstreetmap.org/edit#map=17/${posicao.lat}/${posicao.lon}`} target="_blank" rel="noreferrer">Mapear no OpenStreetMap ↗</a>
+              </div>
+            </div>
+          )}
+          {pontos && !foraDaArea && perto.length > 0 && (
             <div className="carrossel">
               {perto.map(({ p, d }) => {
                 const cat = CATEGORIAS[p.categoria];

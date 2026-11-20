@@ -82,6 +82,12 @@ function inicial(): Estado {
   };
 }
 
+/* Do alerta de exemplo salvo, guarda só o que a pessoa mudou (confirmações e resolvido), e só
+   se ainda for o mesmo alerta (mesmo lugar). */
+function pick(a?: Alerta): Partial<Alerta> {
+  return a ? { confirmacoes: a.confirmacoes, resolvido: a.resolvido } : {};
+}
+
 let atual: Estado | null = null;
 const ouvintes = new Set<() => void>();
 
@@ -91,7 +97,18 @@ function ler(): Estado {
     const bruto = localStorage.getItem(CHAVE);
     if (bruto) {
       const e = JSON.parse(bruto) as Estado;
-      if (e.versao === 1) { atual = { ...inicial(), ...e }; return atual; }
+      if (e.versao === 1) {
+        /* Exemplos sempre vêm do código: assim uma mudança de região substitui os antigos,
+           sem apagar o que a pessoa criou. */
+        const base = inicial();
+        atual = {
+          ...base,
+          ...e,
+          alertas: [...e.alertas.filter((a) => !a.exemplo), ...base.alertas.map((a) => ({ ...a, ...pick(e.alertas.find((x) => x.id === a.id && x.lat === a.lat)) }))],
+          rotas: [...e.rotas.filter((r) => !r.exemplo), ...base.rotas.map((r) => ({ ...r, curtidas: e.rotas.find((x) => x.id === r.id && x.nome === r.nome)?.curtidas ?? r.curtidas }))],
+        };
+        return atual;
+      }
     }
   } catch { /* armazenamento indisponível: segue com o inicial */ }
   atual = inicial();

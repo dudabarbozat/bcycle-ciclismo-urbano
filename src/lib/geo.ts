@@ -1,10 +1,17 @@
 export type LatLon = { lat: number; lon: number };
 
-/* Ponto padrão do protótipo: MASP, na Avenida Paulista. É o centro do retrato de dados gravado. */
-export const PONTO_PADRAO: LatLon & { nome: string } = { lat: -23.5614, lon: -46.6559, nome: "MASP, Av. Paulista (exemplo)" };
+/* Lugares de partida do protótipo, dentro do retrato de dados gravado. */
+export const LUGARES_EXEMPLO = {
+  curitiba: { lat: -25.4285, lon: -49.2711, nome: "Praça Tiradentes, Curitiba" },
+  tamandare: { lat: -25.3133, lon: -49.2998, nome: "Centro de Almirante Tamandaré" },
+} as const;
 
-/* Recorte do retrato gravado do OpenStreetMap (sul, oeste, norte, leste). */
-export const RECORTE_RETRATO = { sul: -23.585, oeste: -46.685, norte: -23.538, leste: -46.627 };
+/* Ponto padrão: Centro de Curitiba, onde está a maior parte da infraestrutura mapeada. */
+export const PONTO_PADRAO: LatLon & { nome: string } = LUGARES_EXEMPLO.curitiba;
+
+/* Recorte do retrato gravado do OpenStreetMap (sul, oeste, norte, leste):
+   do Centro de Almirante Tamandaré ao Centro de Curitiba, passando pelo Tanguá e pelo Barigui. */
+export const RECORTE_RETRATO = { sul: -25.455, oeste: -49.335, norte: -25.29, leste: -49.225 };
 
 const R = 6371008.8;
 const rad = (g: number) => (g * Math.PI) / 180;

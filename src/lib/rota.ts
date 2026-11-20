@@ -52,6 +52,12 @@ const COMANDOS: Record<number, [string, string]> = {
   18: ["Saia à direita", "↗"],
 };
 
+const PISOS: Record<string, string> = {
+  unpaved: "terra ou cascalho", dirt: "terra", earth: "terra", ground: "terra", gravel: "cascalho", fine_gravel: "cascalho fino",
+  compacted: "terra batida", grass: "grama", sand: "areia", mud: "barro", pebblestone: "pedrisco", grass_paver: "bloco vazado com grama",
+  unhewn_cobblestone: "pedra irregular", cobblestone: "pedra irregular", rock: "pedra",
+};
+
 const PAVIMENTADO = /^(asphalt|paved|concrete|concrete:plates|paving_stones|sett|chipseal|metal|wood)$/;
 const MOVIMENTADA = /^(primary|primary_link|secondary|secondary_link|trunk|trunk_link)$/;
 
@@ -129,7 +135,7 @@ export async function calcularRota(a: LatLon, b: LatLon, perfil: PerfilRota, sin
     if (t.surface && !PAVIMENTADO.test(t.surface) && t.surface !== "unknown") {
       analise.semPavimento += metros;
       const k = `pav:${t.surface}`;
-      const a = atencao.get(k) ?? { nome: "Trecho sem asfalto", motivo: `Piso ${t.surface}`, metros: 0, ponto };
+      const a = atencao.get(k) ?? { nome: "Trecho sem asfalto", motivo: `Piso de ${PISOS[t.surface] ?? "terra ou cascalho"}`, metros: 0, ponto };
       a.metros += metros;
       atencao.set(k, a);
     }
