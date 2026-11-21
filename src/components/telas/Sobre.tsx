@@ -38,14 +38,12 @@ export default function Sobre() {
           estacionamento confiável, oficinas no caminho e uma rede de ciclistas que avisa uns aos outros.
         </p>
 
-        <section className="secao" aria-labelledby="hist-t">
-          <h2 id="hist-t" style={{ fontSize: 18 }}>A história do Marcelo</h2>
-          <div className="historia">
-            <p>Marcelo tem <b>32 anos</b> e mora em <b>São Paulo</b>. É <b>garçom</b>, vive ocupado e não tem tempo para pesquisar como proteger a bicicleta de <b>roubo e danos</b>.</p>
-            <p>Pedala há mais de dois anos, sempre <b>tranca a bike no estande</b> perto do trabalho, com a <b>melhor trava</b> que achou. Mesmo assim, entrou para as estatísticas: <b>76% dos ciclistas</b> já tiveram a bike roubada ou conhecem alguém que passou por isso.</p>
-            <p>Ele queria saber onde há <b>estacionamento seguro</b> perto dele e quais <b>oficinas confiáveis</b> ficam na sua rota, porque não tem tempo para manutenção.</p>
-          </div>
-          <p className="pequeno muted">Persona do pitch original.</p>
+        <section className="secao" aria-labelledby="quem-t">
+          <h2 id="quem-t" style={{ fontSize: 18 }}>Para quem é</h2>
+          <p>
+            Para quem usa a bicicleta no dia a dia, para ir ao trabalho ou estudar, e precisa saber por onde pedalar com segurança,
+            onde deixar a bike e onde consertá-la.
+          </p>
         </section>
 
         <section className="secao" aria-labelledby="prob-t">
@@ -106,8 +104,6 @@ export default function Sobre() {
           <h2 id="real-t" style={{ fontSize: 17 }}>O que é real e o que é simulado</h2>
           <ul className="passos">
             <li><b>Real:</b> ciclovias, pontos de apoio, rotas, altitude, busca de endereços e o fator de emissão.</li>
-            <li><b>Retrato gravado:</b> os dados de Curitiba e Almirante Tamandaré vêm de uma consulta ao OpenStreetMap de 20/11/2026. Fora dessa região, o app consulta ao vivo.</li>
-            <li><b>Lacuna:</b> em Almirante Tamandaré quase nada está mapeado ainda (nenhuma ciclovia e nenhum bicicletário no OpenStreetMap). A comunidade do app existe justamente para preencher esse vazio.</li>
             <li><b>Fictício:</b> pessoas, rotas compartilhadas e alertas de exemplo (os locais são reais). Planos não cobram nada.</li>
             <li><b>Só neste navegador:</b> perfil, pedaladas, avaliações e alertas que você criar.</li>
           </ul>

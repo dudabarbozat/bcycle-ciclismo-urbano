@@ -318,8 +318,6 @@ p { margin: 0; }
 .opcao svg { width: 24px; height: 24px; }
 
 /* ---------- Sobre ---------- */
-.historia { background: #ececec; color: #111; border-radius: 18px; padding: 18px; font-size: 14.5px; display: grid; gap: 10px; }
-.historia b { color: #000; }
 .grade-numeros { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .grade-numeros .cartao b { font-family: var(--titulo); font-size: 26px; color: #b6c3ff; display: block; }
 .grade-numeros .cartao small { color: var(--texto-2); font-size: 12.5px; line-height: 1.35; display: block; }
